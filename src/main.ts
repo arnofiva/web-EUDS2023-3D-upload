@@ -85,16 +85,28 @@ view.when().then(async () => {
     "top-right"
   );
 
+  const editor = new Editor({
+    view,
+  });
+
+  editor.viewModel.sketchViewModel.tooltipOptions.enabled = true;
+
   view.ui.add(
     new Expand({
       view,
-      content: new Editor({
-        view,
-      }),
+      content: editor,
       group: "tools",
     }),
     "top-right"
   );
+
+  window.onkeydown = (e) => {
+    const number = Number.parseInt(e.key);
+    const slides = map.presentation.slides;
+    if (0 < number && number <= slides.length) {
+      view.goTo(slides.getItemAt(number - 1).viewpoint, { speedFactor: 0.3 });
+    }
+  };
 });
 
 (window as any)["view"] = view;
