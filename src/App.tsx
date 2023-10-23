@@ -12,11 +12,12 @@ import {
 } from "@arcgis/core/core/accessorSupport/decorators";
 import { watch } from "@arcgis/core/core/reactiveUtils";
 import SceneView from "@arcgis/core/views/SceneView";
+import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
 import Editor from "@arcgis/core/widgets/Editor";
 import { tsx } from "@arcgis/core/widgets/support/widget";
 import MeshModifications from "./MeshModifications";
 import Navigation, { Viewpoint } from "./Navigation";
-import { modelLayer } from "./layers";
+import { modelLayer, satelliteBasemap } from "./layers";
 
 type AppProperties = Pick<App, "view" | "navigation">;
 
@@ -28,12 +29,20 @@ class App extends Widget<AppProperties> {
   @property()
   navigation: Navigation;
 
+  private _basemapToggle: BasemapToggle;
+
   private _modifications: MeshModifications;
 
   private _editor: Editor;
 
   postInitialize(): void {
     const view = this.view;
+
+    const basemapToggle = (this._basemapToggle = new BasemapToggle({
+      view,
+      nextBasemap: satelliteBasemap,
+    }));
+
     const modifications = (this._modifications = new MeshModifications({
       view,
       navigation: this.navigation,
@@ -57,19 +66,35 @@ class App extends Widget<AppProperties> {
       this._editor.visible = false;
     });
 
-    view.ui.add([modifications, editor], "top-right");
+    view.ui.add([basemapToggle, modifications, editor], "bottom-right");
+  }
+
+  private goTo(viewpoint: Viewpoint) {
+    this.navigation.goTo(viewpoint);
   }
 
   private flatten() {
     this._editor.visible = false;
-    this._modifications.visible = !this._modifications.visible;
+    if (this._modifications.visible) {
+      this._modifications.visible = false;
+      this._basemapToggle.visible = true;
+    } else {
+      this._modifications.visible = true;
+      this._basemapToggle.visible = false;
+    }
     this.navigation.goTo(Viewpoint.Flatten);
   }
 
   private upload() {
-    this._editor.visible = !this._editor.visible;
     this._modifications.visible = false;
-    this.navigation.goTo(Viewpoint.Upload);
+    if (this._editor.visible) {
+      this._editor.visible = false;
+      this._basemapToggle.visible = true;
+    } else {
+      this._editor.visible = true;
+      this._basemapToggle.visible = false;
+    }
+    this.navigation.goTo(Viewpoint.Building);
   }
 
   render() {
@@ -82,14 +107,22 @@ class App extends Widget<AppProperties> {
             description="ArcGIS Maps SDK for JavaScript"
             thumbnail="./icon-64.svg"
           ></calcite-navigation-logo>
+
+          <calcite-menu slot="content-center">
+            {[Viewpoint.River, Viewpoint.Downtown, Viewpoint.Site].map(
+              (viewpoint) => (
+                <calcite-button
+                  round
+                  appearance="outline"
+                  class="viewpoint-button"
+                  onclick={() => this.goTo(viewpoint)}
+                >
+                  {viewpoint}
+                </calcite-button>
+              )
+            )}
+          </calcite-menu>
           <calcite-menu slot="content-end">
-            <calcite-menu-item
-              active={this._modifications.visible}
-              onclick={() => this.navigation.goTo(Viewpoint.Downtown)}
-              text="Downtown"
-              // icon-start="road-sign"
-              text-enabled
-            ></calcite-menu-item>
             <calcite-menu-item
               active={this._modifications.visible}
               onclick={() => this.flatten()}

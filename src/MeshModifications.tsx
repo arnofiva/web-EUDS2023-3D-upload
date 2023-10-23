@@ -7,7 +7,7 @@ import { Widget } from "./Widget";
 
 import { tsx } from "@arcgis/core/widgets/support/widget";
 
-import { once } from "@arcgis/core/core/reactiveUtils";
+import { once, watch } from "@arcgis/core/core/reactiveUtils";
 import { Polygon } from "@arcgis/core/geometry";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import IntegratedMeshLayer from "@arcgis/core/layers/IntegratedMeshLayer";
@@ -19,6 +19,7 @@ import "@esri/calcite-components/dist/components/calcite-button";
 import "@esri/calcite-components/dist/components/calcite-notice";
 import "@esri/calcite-components/dist/components/calcite-panel";
 import Navigation, { Viewpoint } from "./Navigation";
+import { createToggle } from "./snippet";
 
 type MeshModificationsProperties = Pick<
   MeshModifications,
@@ -37,6 +38,7 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
   updating = false;
 
   private svm: SketchViewModel;
+  private _snippetToggle = createToggle("tooltipCodeSnippet");
 
   constructor(props: MeshModificationsProperties) {
     super(props);
@@ -75,6 +77,10 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
           this.updateFromSVM();
         }
       }),
+      watch(
+        () => this.svm.state === "active",
+        () => this._snippetToggle()
+      ),
     ]);
   }
 
@@ -105,7 +111,7 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
     await once(() => !lv.updating);
     this.updating = false;
 
-    await this.navigation.goTo(Viewpoint.Upload, 1);
+    await this.navigation.goTo(Viewpoint.Building, 1);
   }
 
   render() {

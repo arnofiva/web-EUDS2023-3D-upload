@@ -10,10 +10,11 @@ import { waitFor } from "./utils";
 type NavigationProperties = Pick<Navigation, "view">;
 
 export enum Viewpoint {
-  Overview,
-  Downtown,
-  Upload,
-  Flatten,
+  River = "River",
+  Downtown = "Downtown",
+  Building = "Building",
+  Site = "Site",
+  Flatten = "Flatten",
 }
 
 @subclass("euds2023modelupload.Navigation")
@@ -33,7 +34,9 @@ class Navigation extends Accessor {
   }
 
   async goTo(viewpoint: Viewpoint, delayInSeconds = 0) {
-    const slide = (await this.slides).getItemAt(viewpoint.valueOf());
+    const slide = (await this.slides).find(
+      (slide) => slide.title.text === viewpoint.valueOf()
+    );
     if (slide) {
       if (0 < delayInSeconds) {
         await waitFor(delayInSeconds);
