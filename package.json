@@ -14,8 +14,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@arcgis/core": "^4.27",
-    "@esri/calcite-components": "1.4.2"
+    "@arcgis/core": "^4.28.0-rc.4",
+    "@esri/calcite-components": "1.9.2"
   },
   "devDependencies": {
     "@types/sortablejs": "^1.15.1",
