@@ -18,13 +18,20 @@ import "@esri/calcite-components/dist/components/calcite-block";
 import "@esri/calcite-components/dist/components/calcite-button";
 import "@esri/calcite-components/dist/components/calcite-notice";
 import "@esri/calcite-components/dist/components/calcite-panel";
+import Navigation, { Viewpoint } from "./Navigation";
 
-type MeshModificationsProperties = Pick<MeshModifications, "view">;
+type MeshModificationsProperties = Pick<
+  MeshModifications,
+  "view" | "navigation"
+>;
 
 @subclass("euds2023modelupload.MeshModifications")
 class MeshModifications extends Widget<MeshModificationsProperties> {
   @property()
   view: SceneView;
+
+  @property()
+  navigation: Navigation;
 
   @property()
   updating = false;
@@ -97,30 +104,36 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
     this.updating = true;
     await once(() => !lv.updating);
     this.updating = false;
+
+    await this.navigation.goTo(Viewpoint.Upload, 1);
   }
 
   render() {
     return (
-      <calcite-panel
-        class="mesh-modifications"
-        loading={this.updating}
-        heading="Mesh Modifications"
-      >
-        <calcite-block open>
-          <calcite-notice open>
-            <div slot="message">Step 1: Create a polygon</div>
-          </calcite-notice>
-        </calcite-block>
-
-        <calcite-button
-          slot="footer"
-          width="full"
-          // appearance="outline"
-          onclick={() => this.createPolygon()}
+      <div>
+        <calcite-panel
+          class="mesh-modifications"
+          loading={this.updating}
+          heading="Mesh Modifications"
         >
-          Create
-        </calcite-button>
-      </calcite-panel>
+          <calcite-block open>
+            <calcite-notice open>
+              <div slot="message">
+                Create or modify polygon to flatten parts of the mesh.
+              </div>
+            </calcite-notice>
+          </calcite-block>
+
+          <calcite-button
+            slot="footer"
+            width="full"
+            // appearance="outline"
+            onclick={() => this.createPolygon()}
+          >
+            Create
+          </calcite-button>
+        </calcite-panel>
+      </div>
     );
   }
 }
