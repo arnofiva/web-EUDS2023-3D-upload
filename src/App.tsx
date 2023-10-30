@@ -127,14 +127,14 @@ class App extends Widget<AppProperties> {
               active={this._modifications.visible}
               onclick={() => this.flatten()}
               text="Flatten Mesh"
-              // icon-start="road-sign"
+              icon-start="mask-inside"
               text-enabled
             ></calcite-menu-item>
             <calcite-menu-item
               active={this._editor.visible}
               onclick={() => this.upload()}
               text="Upload Building"
-              // icon-start="snow"
+              icon-start="upload"
               text-enabled
             ></calcite-menu-item>
           </calcite-menu>
