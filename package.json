@@ -14,7 +14,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@arcgis/core": "^4.28.0-rc.4",
+    "@arcgis/core": "^4.28",
     "@esri/calcite-components": "1.9.2"
   },
   "devDependencies": {
