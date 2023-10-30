@@ -8,7 +8,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
 
 
  -->
- <html lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -17,7 +17,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
     />
     <title>
       Find nearby places and details | Sample | ArcGIS Maps SDK for JavaScript
-      4.27
+      4.28
     </title>
     <style>
       html,
@@ -43,9 +43,9 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
 
     <link
       rel="stylesheet"
-      href="https://js.arcgis.com/4.27/esri/themes/light/main.css"
+      href="https://js.arcgis.com/4.28/esri/themes/light/main.css"
     />
-    <script src="https://js.arcgis.com/4.27/"></script>
+    <script src="https://js.arcgis.com/4.28/"></script>
     <script
       type="module"
       src="https://js.arcgis.com/calcite-components/1.4.2/calcite.esm.js"
@@ -70,7 +70,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
         "esri/geometry/Point",
         "esri/symbols/WebStyleSymbol",
         "esri/rest/places",
-        "esri/Basemap"
+        "esri/Basemap",
       ], function (
         IconSymbol3DLayer,
         LineCallout3D,
@@ -99,12 +99,12 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           id: "graphicsLayer",
           elevationInfo: {
             // offset: 500,
-            mode: "relative-to-scene"
-          }
+            mode: "relative-to-scene",
+          },
         });
         let bufferLayer = new GraphicsLayer({
           // Layer for map buffer
-          id: "bufferLayer"
+          id: "bufferLayer",
         });
         // Left panel interactions
         const categorySelect = document.getElementById("categorySelect");
@@ -117,8 +117,8 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           color: [3, 140, 255, 0.1],
           outline: {
             width: 3,
-            color: [3, 140, 255]
-          }
+            color: [3, 140, 255],
+          },
         };
         // WebStyleSymbols for place features by category
         // 3D WebStyle Symbols
@@ -131,7 +131,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           community,
           dining,
           sports,
-          travel
+          travel,
         ] = [
           "Hospital",
           "Shopping",
@@ -141,12 +141,12 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           "City Hall",
           "Restaurant",
           "Sports Complex",
-          "Hotel"
+          "Hotel",
         ].map(
           (name) =>
             new WebStyleSymbol({
               name,
-              styleName: "EsriIconsStyle"
+              styleName: "EsriIconsStyle",
             })
         );
         // Map with the GraphicsLayer
@@ -155,12 +155,12 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
         //   basemap: "streets-navigation-vector",
         //   layers: [bufferLayer, placesLayer]
         // });
-        
+
         const map = new WebScene({
           portalItem: {
-            id: "e6ece6c1ca454db8b23d26b1d80556fd"
+            id: "e6ece6c1ca454db8b23d26b1d80556fd",
           },
-          layers: [bufferLayer, placesLayer]
+          layers: [bufferLayer, placesLayer],
         });
 
         // View with customized highlight options
@@ -182,8 +182,8 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           highlightOptions: {
             color: [0, 255, 51, 1],
             haloOpacity: 0.9,
-            fillOpacity: 0.2
-          }
+            fillOpacity: 0.2,
+          },
         });
         view.environment.lighting.directShadowsEnabled = true;
         // View on-click event to capture places search location
@@ -216,11 +216,11 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
             geodesic: true,
             numberOfPoints: 100,
             radius: 300,
-            radiusUnit: "meters"
+            radiusUnit: "meters",
           });
           const circleGraphic = new Graphic({
             geometry: circleGeometry,
-            symbol: circleSymbol
+            symbol: circleSymbol,
           });
           // Add buffer graphic to the view
           bufferLayer.graphics.add(circleGraphic);
@@ -229,7 +229,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
             apiKey,
             categoryIds: [activeCategory],
             radius: 300,
-            point: clickPoint
+            point: clickPoint,
           });
           // The results variable represents the PlacesQueryResult
           const results = await places.queryPlacesNearPoint(
@@ -277,11 +277,11 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
         async function addResult(place) {
           const placePoint = new Point({
             y: place.location.y,
-            x: place.location.x
+            x: place.location.x,
           });
           const placeGraphic = new Graphic({
             layer: placesLayer,
-            geometry: placePoint
+            geometry: placePoint,
           });
           const wsSymbol = getWSSymbol(activeCategory);
           const pointSymbol = await wsSymbol.fetchSymbol();
@@ -291,14 +291,14 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           pointSymbol.verticalOffset = {
             screenLength: 60,
             maxWorldLength: 500,
-            minWorldLength: 20
+            minWorldLength: 20,
           };
           pointSymbol.callout = new LineCallout3D({
             size: 2.5,
             border: {
-              color: iconSL.material.color
+              color: iconSL.material.color,
             },
-            color: "white"
+            color: "white",
           });
 
           const name = wsSymbol.name;
@@ -306,7 +306,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
             iconSL.anchor = "relative";
             iconSL.anchorPosition = {
               x: 0,
-              y: 0.2
+              y: 0.2,
             };
           } else {
             iconSL.anchor = "center";
@@ -316,16 +316,16 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
             new IconSymbol3DLayer({
               anchor: "center",
               resource: {
-                primitive: "circle"
+                primitive: "circle",
               },
               size: iconSL.size * 1.4,
               material: {
-                color: "white"
+                color: "white",
               },
               outline: {
                 color: iconSL.material.color,
-                size: 1
-              }
+                size: 1,
+              },
             }),
             0
           );
@@ -338,7 +338,7 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
           const fetchPlaceParameters = new FetchPlaceParameters({
             apiKey,
             placeId: place.placeId,
-            requestedFields: ["all"]
+            requestedFields: ["all"],
           });
           const infoDiv = document.createElement("calcite-list-item");
           const description = `
@@ -352,16 +352,16 @@ https://developers.arcgis.com/documentation/mapping-apis-and-services/get-starte
             view.popup.dockEnabled = true;
             view.popup.dockOptions = {
               breakpoint: {
-                width: 3
+                width: 3,
               },
-              position: "bottom-center"
+              position: "bottom-center",
             };
 
             view.openPopup({
               // features: [placeGraphic],
               // location: placePoint,
               title: place.name,
-              content: "See panel for more details"
+              content: "See panel for more details",
             });
             // Highlight the selected place feature
             const layerView = await view.whenLayerView(placesLayer);
