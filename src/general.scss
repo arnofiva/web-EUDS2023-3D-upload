@@ -63,3 +63,12 @@ pre[class*="language-"] {
 
   background: none !important;
 }
+
+* {
+  --calcite-ui-brand: rgb(70, 70, 248);
+  // --calcite-ui-brand: rgb(55, 200, 100);
+  --calcite-ui-brand-hover: rgb(34, 34, 247);
+  // --calcite-ui-brand-press: rgb(0, 100, 0);
+
+  --calcite-ui-danger: rgb(248, 70, 70);
+}

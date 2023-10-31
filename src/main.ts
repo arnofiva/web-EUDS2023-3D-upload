@@ -1,3 +1,4 @@
+import Color from "@arcgis/core/Color";
 import WebScene from "@arcgis/core/WebScene";
 import { watch } from "@arcgis/core/core/reactiveUtils";
 import IdentityManager from "@arcgis/core/identity/IdentityManager";
@@ -37,6 +38,10 @@ const view = new SceneView({
   qualityProfile: "high",
   container: "viewDiv",
   map,
+  theme: {
+    accentColor: new Color([140, 248, 70]),
+    textColor: new Color([70, 70, 248]),
+  },
 });
 
 const navigation = new Navigation({ view });
