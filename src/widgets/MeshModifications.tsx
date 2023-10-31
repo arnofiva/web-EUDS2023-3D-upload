@@ -7,19 +7,23 @@ import { Widget } from "./Widget";
 
 import { tsx } from "@arcgis/core/widgets/support/widget";
 
-import { once, watch } from "@arcgis/core/core/reactiveUtils";
+import Color from "@arcgis/core/Color";
+import { once, watch, when } from "@arcgis/core/core/reactiveUtils";
 import { Polygon } from "@arcgis/core/geometry";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import IntegratedMeshLayer from "@arcgis/core/layers/IntegratedMeshLayer";
 import SceneModification from "@arcgis/core/layers/support/SceneModification";
 import SceneModifications from "@arcgis/core/layers/support/SceneModifications";
+import { FillSymbol3DLayer } from "@arcgis/core/symbols";
+import PolygonSymbol3D from "@arcgis/core/symbols/PolygonSymbol3D";
+import StylePattern3D from "@arcgis/core/symbols/patterns/StylePattern3D";
 import SketchViewModel from "@arcgis/core/widgets/Sketch/SketchViewModel";
 import "@esri/calcite-components/dist/components/calcite-block";
 import "@esri/calcite-components/dist/components/calcite-button";
 import "@esri/calcite-components/dist/components/calcite-notice";
 import "@esri/calcite-components/dist/components/calcite-panel";
-import Navigation, { Viewpoint } from "./Navigation";
-import { createToggle } from "./snippet";
+import Navigation, { Viewpoint } from "../Navigation";
+import { createToggle } from "../snippet";
 
 type MeshModificationsProperties = Pick<
   MeshModifications,
@@ -55,6 +59,22 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
     this.svm = new SketchViewModel({
       view,
       layer,
+      polygonSymbol: new PolygonSymbol3D({
+        symbolLayers: [
+          new FillSymbol3DLayer({
+            material: {
+              color: new Color([140, 248, 70, 0.55]),
+            },
+            outline: {
+              size: 0.5,
+              color: new Color([140, 248, 70]),
+            },
+            pattern: new StylePattern3D({
+              style: "forward-diagonal",
+            }),
+          }),
+        ],
+      }),
       // polygonSymbol: new PolygonSymbol3D({
       //   symbolLayers: [
       //     new FillSymbol3DLayer({
@@ -66,9 +86,12 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
 
     view.map.add(layer);
 
+    let snippetVisible = false;
+
     this.addHandles([
       this.svm.on("create", (event) => {
         if (event.state === "complete" || event.state === "cancel") {
+          this.svm.update(event.graphic);
           this.updateFromSVM();
         }
       }),
@@ -77,11 +100,32 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
           this.updateFromSVM();
         }
       }),
+      when(
+        () => this.svm.state === "active" && !snippetVisible,
+        () => {
+          snippetVisible = true;
+          this._snippetToggle();
+        }
+      ),
       watch(
-        () => this.svm.state === "active",
-        () => this._snippetToggle()
+        () => this.visible,
+        (visible) => {
+          if (!visible) {
+            if (snippetVisible) {
+              snippetVisible = false;
+              this._snippetToggle();
+            }
+            this.svm.cancel();
+          }
+          this.svm.layer.visible = visible;
+        }
       ),
     ]);
+  }
+
+  destroy(): void {
+    this.view.map.remove(this.svm.layer);
+    this.svm.destroy();
   }
 
   private async createPolygon() {
@@ -89,11 +133,14 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
   }
 
   private async updateFromSVM() {
+    this.updating = true;
     const polygons = this.svm.layer.graphics.map((g) => g.geometry as Polygon);
 
     const mesh = this.view.map.allLayers.find(
       (l) => l.type === "integrated-mesh"
     ) as IntegratedMeshLayer;
+
+    await this.navigation.goTo(Viewpoint.Site, 1, 0.2);
 
     mesh.modifications = new SceneModifications(
       polygons.map(
@@ -107,11 +154,8 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
 
     const lv = await this.view.whenLayerView(mesh);
 
-    this.updating = true;
     await once(() => !lv.updating);
     this.updating = false;
-
-    await this.navigation.goTo(Viewpoint.Building, 1);
   }
 
   render() {

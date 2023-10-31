@@ -33,7 +33,7 @@ class Navigation extends Accessor {
     super(properties);
   }
 
-  async goTo(viewpoint: Viewpoint, delayInSeconds = 0) {
+  async goTo(viewpoint: Viewpoint, speedFactor = 0.3, delayInSeconds = 0) {
     const slide = (await this.slides).find(
       (slide) => slide.title.text === viewpoint.valueOf()
     );
@@ -42,7 +42,7 @@ class Navigation extends Accessor {
         await waitFor(delayInSeconds);
       }
       await this.view.goTo(slide.viewpoint, {
-        speedFactor: 0.3,
+        speedFactor,
       });
     }
   }

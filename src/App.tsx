@@ -1,4 +1,4 @@
-import { Widget } from "./Widget";
+import { Widget } from "./widgets/Widget";
 
 import "@esri/calcite-components/dist/components/calcite-menu";
 import "@esri/calcite-components/dist/components/calcite-menu-item";
@@ -15,9 +15,9 @@ import SceneView from "@arcgis/core/views/SceneView";
 import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
 import Editor from "@arcgis/core/widgets/Editor";
 import { tsx } from "@arcgis/core/widgets/support/widget";
-import MeshModifications from "./MeshModifications";
 import Navigation, { Viewpoint } from "./Navigation";
 import { modelLayer, satelliteBasemap } from "./layers";
+import MeshModifications from "./widgets/MeshModifications";
 
 type AppProperties = Pick<App, "view" | "navigation">;
 
@@ -70,6 +70,9 @@ class App extends Widget<AppProperties> {
   }
 
   private goTo(viewpoint: Viewpoint) {
+    this._editor.visible = false;
+    this._modifications.visible = false;
+    this._basemapToggle.visible = true;
     this.navigation.goTo(viewpoint);
   }
 
@@ -94,7 +97,7 @@ class App extends Widget<AppProperties> {
       this._editor.visible = true;
       this._basemapToggle.visible = false;
     }
-    this.navigation.goTo(Viewpoint.Building);
+    this.navigation.goTo(Viewpoint.Site);
   }
 
   render() {
@@ -109,7 +112,7 @@ class App extends Widget<AppProperties> {
           ></calcite-navigation-logo>
 
           <calcite-menu slot="content-center">
-            {[Viewpoint.River, Viewpoint.Downtown, Viewpoint.Site].map(
+            {[Viewpoint.Downtown, Viewpoint.River, Viewpoint.Building].map(
               (viewpoint) => (
                 <calcite-button
                   round
