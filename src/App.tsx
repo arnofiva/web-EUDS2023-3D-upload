@@ -116,7 +116,8 @@ class App extends Widget<AppProperties> {
               (viewpoint) => (
                 <calcite-button
                   round
-                  appearance="outline"
+                  kind="neutral"
+                  // appearance="outline"
                   class="viewpoint-button"
                   onclick={() => this.goTo(viewpoint)}
                 >
