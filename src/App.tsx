@@ -16,7 +16,7 @@ import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
 import Editor from "@arcgis/core/widgets/Editor";
 import { tsx } from "@arcgis/core/widgets/support/widget";
 import Navigation, { Viewpoint } from "./Navigation";
-import { modelLayer, satelliteBasemap } from "./layers";
+import { satelliteBasemap } from "./layers";
 import MeshModifications from "./widgets/MeshModifications";
 
 type AppProperties = Pick<App, "view" | "navigation">;
@@ -62,9 +62,9 @@ class App extends Widget<AppProperties> {
       }
     );
 
-    modelLayer.on("edits", () => {
-      this._editor.visible = false;
-    });
+    // modelLayer.on("edits", () => {
+    //   this._editor.visible = false;
+    // });
 
     view.ui.add([basemapToggle, modifications, editor], "bottom-right");
   }

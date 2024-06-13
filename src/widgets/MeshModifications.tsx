@@ -7,7 +7,6 @@ import { Widget } from "./Widget";
 
 import { tsx } from "@arcgis/core/widgets/support/widget";
 
-import Color from "@arcgis/core/Color";
 import { once, watch, when } from "@arcgis/core/core/reactiveUtils";
 import { Polygon } from "@arcgis/core/geometry";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
@@ -23,6 +22,7 @@ import "@esri/calcite-components/dist/components/calcite-button";
 import "@esri/calcite-components/dist/components/calcite-notice";
 import "@esri/calcite-components/dist/components/calcite-panel";
 import Navigation, { Viewpoint } from "../Navigation";
+import { highlightColor } from "../main";
 import { createToggle } from "../snippet";
 
 type MeshModificationsProperties = Pick<
@@ -63,11 +63,11 @@ class MeshModifications extends Widget<MeshModificationsProperties> {
         symbolLayers: [
           new FillSymbol3DLayer({
             material: {
-              color: new Color([140, 248, 70, 0.55]),
+              color: highlightColor,
             },
             outline: {
               size: 0.5,
-              color: new Color([140, 248, 70]),
+              color: highlightColor,
             },
             pattern: new StylePattern3D({
               style: "forward-diagonal",

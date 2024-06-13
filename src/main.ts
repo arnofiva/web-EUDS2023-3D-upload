@@ -4,6 +4,7 @@ import { watch } from "@arcgis/core/core/reactiveUtils";
 import IdentityManager from "@arcgis/core/identity/IdentityManager";
 import OAuthInfo from "@arcgis/core/identity/OAuthInfo";
 import SceneView from "@arcgis/core/views/SceneView";
+import Daylight from "@arcgis/core/widgets/Daylight";
 import "@esri/calcite-components/dist/calcite/calcite.css";
 import "@esri/calcite-components/dist/components/calcite-loader";
 import App from "./App";
@@ -14,6 +15,9 @@ import { modelLayer, satelliteBasemap } from "./layers";
 
 // const params = new URLSearchParams(document.location.search.slice(1));
 // const someParam = params.has("someParam");
+
+export const themeColor = new Color([61, 77, 228]);
+export const highlightColor = new Color([228, 61, 228]);
 
 IdentityManager.registerOAuthInfos([
   new OAuthInfo({
@@ -38,11 +42,42 @@ const view = new SceneView({
   qualityProfile: "high",
   container: "viewDiv",
   map,
-  theme: {
-    accentColor: new Color([140, 248, 70]),
-    textColor: new Color([70, 70, 248]),
+  // theme: {
+  //   // accentColor: new Color([140, 248, 70]),
+  //   accentColor: highlightColor,
+  //   textColor: themeColor,
+  // },
+  highlightOptions: {
+    // color: new Color([140, 248, 70]),
+    color: themeColor,
+    fillOpacity: 0,
+    // haloColor: new Color([140, 248, 70]),
+    haloColor: themeColor,
+    haloOpacity: 1,
+    shadowColor: highlightColor,
+    shadowOpacity: 0.9,
+    shadowDifference: 0.7,
   },
 });
+
+view.popup.dockEnabled = true;
+view.popup.dockOptions = {
+  position: "bottom-left",
+};
+
+const daylight = new Daylight({
+  visible: false,
+  view,
+});
+
+view.ui.add(daylight, "bottom-left");
+
+watch(
+  () => view.popup?.visible,
+  (visible) => {
+    daylight.visible = visible;
+  }
+);
 
 const navigation = new Navigation({ view });
 
