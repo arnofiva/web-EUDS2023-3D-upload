@@ -1,8 +1,6 @@
 import Color from "@arcgis/core/Color";
 import WebScene from "@arcgis/core/WebScene";
 import { watch } from "@arcgis/core/core/reactiveUtils";
-import IdentityManager from "@arcgis/core/identity/IdentityManager";
-import OAuthInfo from "@arcgis/core/identity/OAuthInfo";
 import SceneView from "@arcgis/core/views/SceneView";
 import Daylight from "@arcgis/core/widgets/Daylight";
 import "@esri/calcite-components/dist/calcite/calcite.css";
@@ -19,17 +17,17 @@ import { modelLayer, satelliteBasemap } from "./layers";
 export const themeColor = new Color([61, 77, 228]);
 export const highlightColor = new Color([228, 61, 228]);
 
-IdentityManager.registerOAuthInfos([
-  new OAuthInfo({
-    appId: "KojZjH6glligLidj",
-    popup: true,
-    popupCallbackUrl: `${document.location.origin}${document.location.pathname}oauth-callback-api.html`,
-  }),
-]);
+// IdentityManager.registerOAuthInfos([
+//   new OAuthInfo({
+//     appId: "KojZjH6glligLidj",
+//     popup: true,
+//     popupCallbackUrl: `${document.location.origin}${document.location.pathname}oauth-callback-api.html`,
+//   }),
+// ]);
 
-(window as any).setOAuthResponseHash = (responseHash: string) => {
-  IdentityManager.setOAuthResponseHash(responseHash);
-};
+// (window as any).setOAuthResponseHash = (responseHash: string) => {
+//   IdentityManager.setOAuthResponseHash(responseHash);
+// };
 
 const map = new WebScene({
   portalItem: {
